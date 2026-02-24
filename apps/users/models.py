@@ -2,13 +2,21 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from apps.users.managers import CustomUserManager
+
+
 # Create your models here.
 
 class User(AbstractUser):
+    username = None
+    email = None
+
     phone = models.CharField(max_length=20, unique=True)
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.phone
@@ -42,7 +50,7 @@ class UserProfile(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(
+    profile = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
         related_name="addresses"
