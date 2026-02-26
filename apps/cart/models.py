@@ -14,6 +14,9 @@ class Cart(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Cart of {self.user}"
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(
@@ -26,3 +29,14 @@ class CartItem(models.Model):
         on_delete=models.CASCADE
     )
     quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cart", "product"],
+                name="unique_product_in_cart"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.product} x {self.quantity}"
