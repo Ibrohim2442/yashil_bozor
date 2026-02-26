@@ -1,0 +1,34 @@
+from rest_framework import serializers
+from .models import Product, ProductImage
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ("id", "image")
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
+    discount_percent = serializers.ReadOnlyField()
+    is_in_stock = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "name",
+            "description",
+            "price",
+            "discount_price",
+            "discount_percent",
+            "is_in_stock",
+            "stock",
+            "height",
+            "care",
+            "light",
+            "delivery_days",
+            "seller",
+            "images",
+            "created_at",
+        )
