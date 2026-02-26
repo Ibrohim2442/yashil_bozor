@@ -6,7 +6,7 @@ from .views import CreateUserView, UserProfileCreateView, UserProfileDetailView,
 urlpatterns = [
     path('user-create/', CreateUserView.as_view()),
 
-    path('profiles/', UserProfileCreateView.as_view(), name='profile-create'),
-    path('profiles/me/', UserProfileDetailView.as_view(), name='profile-detail'),
-    path('profiles/me/update/', UserProfileUpdateView.as_view(), name='profile-update'),
+    path('profiles/', UserProfileCreateView.as_view()),
+    path('profiles/me/', UserProfileDetailView.as_view()),
+    path('profiles/me/update/', UserProfileUpdateView.as_view()),
 ]
