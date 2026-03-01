@@ -16,3 +16,6 @@ class PromoCode(models.Model):
             self.used_count < self.max_usage and
             self.expire_date > timezone.now()
         )
+
+    def __str__(self):
+        return self.code
