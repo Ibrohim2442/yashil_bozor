@@ -30,6 +30,7 @@ urlpatterns = [
     path("api/cart/", include("apps.cart.urls")),
 
     path("api/reviews/", include("apps.reviews.urls")),
+    path("api/orders/", include("apps.orders.urls")),
 
     # YOUR PATTERNS
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
