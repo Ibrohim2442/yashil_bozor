@@ -11,7 +11,7 @@ from apps.products.serialzier import ProductSerializer
 
 class CategoryProductsView(generics.ListAPIView):
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [OrderingFilter]
     filterset_class = ProductFilter
 
     ordering_fields = ["price", "created_at"]
