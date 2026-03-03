@@ -26,3 +26,7 @@ class CategoryProductsView(generics.ListAPIView):
             .prefetch_related("images")
             .filter(category_id=category_id)
         )
+
+class ProductsListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
