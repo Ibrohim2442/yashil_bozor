@@ -10,18 +10,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('products', '0001_initial'),
+        ('cart', '0002_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='favorite',
+            model_name='cart',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorites', to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='cart', to=settings.AUTH_USER_MODEL),
         ),
-        migrations.AlterUniqueTogether(
-            name='favorite',
-            unique_together={('user', 'product')},
+        migrations.AddConstraint(
+            model_name='cartitem',
+            constraint=models.UniqueConstraint(fields=('cart', 'product'), name='unique_product_in_cart'),
         ),
     ]

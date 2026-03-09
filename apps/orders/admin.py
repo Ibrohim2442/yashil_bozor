@@ -13,7 +13,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'recipient_name', 'total_price', 'status', 'created_at']
     list_filter = ['status']
     search_fields = ['recipient_name', 'recipient_phone']
-    readonly_fields = ['total_price', 'created_at']
+    readonly_fields = ['total_price', 'created_at', 'latitude', 'longitude']
     inlines = [OrderItemInline]
 
     def save_formset(self, request, form, formset, change):

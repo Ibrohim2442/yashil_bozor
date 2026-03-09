@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from geopy import Nominatim
-from geopy.exc import GeocoderTimedOut
 
 from apps.users.managers import CustomUserManager
 
@@ -23,29 +21,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.phone
 
-class Address(models.Model):
-    city = models.CharField(max_length=100)
-    address_line = models.CharField(max_length=255)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
-
-    is_default = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.city}, {self.address_line}"
-
-    def save(self, *args, **kwargs):
-        if self.latitude is None or self.longitude is None:
-            try:
-                geolocator = Nominatim(user_agent="users")
-                location = geolocator.geocode(f"{self.address_line}, {self.city}")
-                if location:
-                    self.latitude = location.latitude
-                    self.longitude = location.longitude
-            except GeocoderTimedOut:
-                pass
-        super().save(*args, **kwargs)
-
 class UserProfile(models.Model):
     GENDER_CHOICES = (
         ("male", "Male"),
@@ -64,7 +39,7 @@ class UserProfile(models.Model):
     birth_date = models.DateField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
     email = models.EmailField(blank=True)
-    addresses = models.ManyToManyField(Address, blank=True, related_name="profiles")
+    address = models.CharField(max_length=100)
 
     @property
     def phone(self):
