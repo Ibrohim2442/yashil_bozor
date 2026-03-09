@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from geopy.geocoders import Nominatim
 
 from apps.products.models import Product
 
@@ -28,7 +28,7 @@ class Order(models.Model):
 
     courier_note = models.TextField(blank=True)
 
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=255)
 
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
@@ -46,6 +46,8 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
 
         if self.latitude is None or self.longitude is None:
+            from geopy.geocoders import Nominatim
+
             geolocator = Nominatim(user_agent="apps")
             location = geolocator.geocode(self.address)
 
@@ -65,6 +67,27 @@ class OrderItem(models.Model):
         on_delete=models.CASCADE,
         related_name="items"
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="order_items")
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return self.product.name
+
+class OrderItemReview(models.Model):
+    order_item = models.OneToOneField(
+        OrderItem,
+        on_delete=models.CASCADE,
+        related_name="review"
+    )
+
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    pros = models.TextField(blank=True)
+    cons = models.TextField(blank=True)
+    comment = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.order_item.product.name

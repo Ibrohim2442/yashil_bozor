@@ -37,9 +37,14 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True)
     birth_date = models.DateField()
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER_CHOICES,
+        default="",
+        blank=True
+    )
     email = models.EmailField(blank=True)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=255)
 
     @property
     def phone(self):

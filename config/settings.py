@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'apps.products',
     'apps.cart',
     'apps.orders',
-    'apps.reviews',
     'apps.promotions',
     'apps.services',
 ]
@@ -157,8 +156,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Yashil Bozor Clone API',
-    'DESCRIPTION': 'Your project description',
+    'TITLE': 'Yashil Bozor API',
+    'DESCRIPTION': 'REST API for the Yashil Bozor marketplace platform.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
