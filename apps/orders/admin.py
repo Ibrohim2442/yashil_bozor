@@ -46,6 +46,15 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = ("id", "order", "product", "quantity", "price")
     readonly_fields = ("price",)
 
+    def has_add_permission(self, request):
+        return False
+
+    def has_edit_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 @admin.register(OrderItemReview)
 class OrderItemReviewAdmin(admin.ModelAdmin):
     list_display = ("order_item", "rating", "pros", "cons", "comment", "created_at")
