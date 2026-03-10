@@ -40,15 +40,18 @@ class UserProfile(models.Model):
     gender = models.CharField(
         max_length=10,
         choices=GENDER_CHOICES,
-        default="",
-        blank=True
+        blank=True,
+        null=True
     )
     email = models.EmailField(blank=True)
     address = models.CharField(max_length=255)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def phone(self):
         return self.user.phone
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} ({self.user.phone})"

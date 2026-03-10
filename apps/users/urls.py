@@ -1,12 +1,11 @@
 from django.urls import path
 
 from . import views
-from .views import CreateUserView, UserProfileCreateView, UserProfileDetailView, UserProfileUpdateView
+from .views import CreateUserView, UserProfileCreateView, UserProfileDetailUpdateView
 
 urlpatterns = [
-    path('users/', CreateUserView.as_view()),
+    path('', CreateUserView.as_view()),
 
     path('profiles/', UserProfileCreateView.as_view()),
-    path('profiles/me/', UserProfileDetailView.as_view()),
-    path('profiles/me/', UserProfileUpdateView.as_view()),
+    path('profiles/me/', UserProfileDetailUpdateView.as_view())
 ]

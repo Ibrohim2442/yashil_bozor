@@ -25,24 +25,21 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('apps.users.urls')),
-    # path('admin/users/', include('apps.users.urls')),
 
-    path("api/catalog", include("apps.catalog.urls")),
-    path("api/products/", include("apps.products.urls")),
+    path('api/v1/', include([
+        path('categories/', include('apps.categories.urls')),
+        path('products/', include('apps.products.urls')),
+        path('cart/', include('apps.cart.urls')),
+        path('orders/', include('apps.orders.urls')),
+        path('services/', include('apps.services.urls')),
+        path('users/', include('apps.users.urls')),
+    ])),
 
-    path("api/cart/", include("apps.cart.urls")),
-
-    path("api/orders/", include("apps.orders.urls")),
-
-    path("api/services/", include("apps.services.urls")),
-
-    # YOUR PATTERNS
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Optional UI:
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/v1/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/v1/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += debug_toolbar_urls()
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += debug_toolbar_urls()

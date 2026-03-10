@@ -1,7 +1,7 @@
 from rest_framework import generics
 
-from apps.catalog.models import Category
-from apps.catalog.serializer import CategoryDetailSerializer, CategoryListSerializer
+from apps.categories.models import Category
+from apps.categories.serializer import CategoryDetailSerializer, CategoryListSerializer
 
 
 # Create your views here.

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from apps.catalog.models import Category, Seller
+from apps.categories.models import Category, Seller
 
 
 class Product(models.Model):

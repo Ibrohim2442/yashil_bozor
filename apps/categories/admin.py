@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.utils.html import format_html
 
-from apps.catalog.models import Category, Seller
+from apps.categories.models import Category, Seller
 
 
 @admin.register(Category)

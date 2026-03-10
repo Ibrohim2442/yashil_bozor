@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
@@ -18,21 +19,21 @@ class UserProfileCreateView(generics.CreateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
-class UserProfileDetailView(generics.RetrieveAPIView):
+    def perform_create(self, serializer):
+        if UserProfile.objects.filter(user=self.request.user).exists():
+            raise ValidationError('Profile already exists')
+        serializer.save(user=self.request.user)
+
+class UserProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return UserProfile.objects.get(user=self.request.user)
-
-class UserProfileUpdateView(generics.UpdateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return UserProfile.objects.get(user=self.request.user)
+        user = UserProfile.objects.get(user=self.request.user)
+        if not user:
+            raise ValidationError('Profile not exists')
+        return user
 
     def get_serializer(self, *args, **kwargs):
         kwargs['partial'] = True
