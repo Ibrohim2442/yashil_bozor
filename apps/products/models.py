@@ -1,8 +1,21 @@
 from django.conf import settings
 from django.db import models
 
-from apps.categories.models import Category, Seller
+from apps.categories.models import Category
 
+class Seller(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    logo = models.ImageField(
+        upload_to="sellers/",
+        null=True,
+        blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
     HEIGHT_CHOICES = (

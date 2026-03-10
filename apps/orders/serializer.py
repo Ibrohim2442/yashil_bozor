@@ -1,7 +1,7 @@
 from django.template.context_processors import request
 from rest_framework import serializers
 from .models import Order, OrderItem, OrderItemReview
-from ..products.serialzier import ProductSerializer
+from ..products.serializer import ProductSerializer
 
 
 class OrderItemCreateSerializer(serializers.ModelSerializer):

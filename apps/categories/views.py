@@ -7,10 +7,10 @@ from apps.categories.serializer import CategoryDetailSerializer, CategoryListSer
 # Create your views here.
 
 class CategoryListView(generics.ListAPIView):
-    queryset = Category.objects.filter(parent__isnull=True)
+    queryset = Category.objects.prefetch_related('children').filter(parent__isnull=True)
     serializer_class = CategoryListSerializer
 
 
 class CategoryDetailView(generics.RetrieveAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.prefetch_related('children').all()
     serializer_class = CategoryDetailSerializer

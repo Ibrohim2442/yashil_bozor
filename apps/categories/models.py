@@ -6,7 +6,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     parent = models.ForeignKey(
         "self",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
         related_name="children"
@@ -16,38 +16,32 @@ class Category(models.Model):
         null=True,
         blank=True
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = "Categories"
+        unique_together = ('name', 'parent')
+
+    def clean(self):
+        if self.pk and self.parent_id == self.pk:
+            raise ValidationError('Category cannot be its own parent!')
+        if self.parent and self.parent.parent is not None:
+            raise ValidationError('Child category cannot be a parent!')
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         if self.parent is None:
             self.image = None
-
-        if self.parent and self.parent == self:
-            raise ValidationError("Category cannot be its own parent!")
-
-        if self.parent and self.parent.parent is not None:
-            raise ValidationError("Child category cannot be a parent!")
-
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
 
     @property
     def is_root(self):
         return self.parent is None
 
-
-class Seller(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    logo = models.ImageField(
-        upload_to="sellers/",
-        null=True,
-        blank=True
-    )
+    @property
+    def is_leaf(self):
+        return not self.children.exists()
 
     def __str__(self):
         return self.name

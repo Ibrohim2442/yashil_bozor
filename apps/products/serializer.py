@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from .models import Product, ProductImage
+from .models import Product, ProductImage, Seller
 
+class SellerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seller
+        fields = ("id", "name", "description")
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:

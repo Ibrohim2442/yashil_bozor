@@ -3,8 +3,13 @@ from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
 from django.utils.html import format_html
 
-from apps.products.models import Product, ProductImage, Favorite
+from apps.products.models import Product, ProductImage, Favorite, Seller
 
+
+@admin.register(Seller)
+class SellerAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 class ProductImageInlineFormSet(BaseInlineFormSet):
     def clean(self):

@@ -4,7 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.products.filters import ProductFilter
 from apps.products.models import Product
-from apps.products.serialzier import ProductSerializer
+from apps.products.serializer import ProductSerializer
 
 
 # Create your views here.
