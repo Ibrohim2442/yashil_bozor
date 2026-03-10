@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.generics import ListAPIView
 
 from apps.services.models import ParentService, Garden
-from apps.services.serializer import ParentServiceSerializer, GardenSerializer, GardenDetailSerializer
+from apps.services.serializers import ParentServiceSerializer, GardenSerializer, GardenDetailSerializer
 
 
 # Create your views here.

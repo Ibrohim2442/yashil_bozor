@@ -1,7 +1,7 @@
 from django.template.context_processors import request
 from rest_framework import generics, permissions
 from .models import Order, OrderItemReview
-from .serializer import OrderSerializer, OrderItemReviewSerializer, OrderCreateSerializer
+from .serializers import OrderSerializer, OrderItemReviewSerializer, OrderCreateSerializer
 
 
 class OrderListCreateView(generics.ListCreateAPIView):

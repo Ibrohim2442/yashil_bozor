@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.users.models import User, UserProfile
-from apps.users.serializer import UserSerializer, UserProfileSerializer
+from apps.users.serializers import UserSerializer, UserProfileSerializer
 
 
 # Create your views here.
