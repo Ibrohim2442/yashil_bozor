@@ -1,26 +1,43 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
-# Create your models here.
 
-class ParentService(models.Model):
+class Service(models.Model):
     name = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.name
-
-class ChildService(models.Model):
     parent = models.ForeignKey(
-        ParentService,
+        "self",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name="children"
     )
-    name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to="services/")
+
+    image = models.ImageField(
+        upload_to="services/",
+        null=True,
+        blank=True
+    )
+
+    def clean(self):
+        if self.parent is None and self.image:
+            raise ValidationError("Parent service cannot have an image.")
+
+        if self.parent is not None and not self.image:
+            raise ValidationError("Child service must have an image.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.parent.name} → {self.name}"
+        if self.parent:
+            return f"{self.parent.name} → {self.name}"
+        return self.name
+
 
 # ------------------------------------------------------------
+
 
 class Region(models.Model):
     name = models.CharField(max_length=150)
@@ -28,10 +45,12 @@ class Region(models.Model):
     def __str__(self):
         return self.name
 
+
 class Garden(models.Model):
     full_name = models.CharField(max_length=255)
 
     profile_image = models.ImageField(upload_to="gardens/")
+
     region = models.ForeignKey(
         Region,
         on_delete=models.SET_NULL,
@@ -42,13 +61,26 @@ class Garden(models.Model):
     experience = models.PositiveIntegerField()
 
     about_me = models.TextField()
-    my_works = models.ImageField('gardens/works/')
+
     my_services = models.TextField()
 
     services = models.ManyToManyField(
-        ChildService,
+        Service,
         related_name="gardens"
     )
 
     def __str__(self):
         return self.full_name
+
+
+class GardenWork(models.Model):
+    garden = models.ForeignKey(
+        Garden,
+        on_delete=models.CASCADE,
+        related_name="works"
+    )
+
+    image = models.ImageField(upload_to="gardens/works/")
+
+    def __str__(self):
+        return f"Work of {self.garden.full_name}"

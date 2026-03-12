@@ -1,24 +1,46 @@
-from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
 
-from apps.services.models import ParentService, Garden
-from apps.services.serializers import ParentServiceSerializer, GardenSerializer, GardenDetailSerializer
+from apps.services.models import Service, Garden
+from apps.services.serializers import (
+    ParentServiceSerializer,
+    GardenSerializer,
+    GardenDetailSerializer,
+)
 
 
-# Create your views here.
+class ListServiceView(ListAPIView):
 
-class ListServiceView(generics.ListAPIView):
-    queryset = ParentService.objects.all()
     serializer_class = ParentServiceSerializer
 
-# -------------------------------------------------------------------------
+    queryset = Service.objects.filter(
+        parent__isnull=True
+    ).prefetch_related("children")
 
-class GardenListView(generics.ListAPIView):
-    queryset = Garden.objects.all()
+
+# -------------------------------------------------------------
+
+
+class GardenListView(ListAPIView):
+
     serializer_class = GardenSerializer
-    filterset_fields = ('region__name', 'services__name')
+
+    queryset = Garden.objects.select_related(
+        "region"
+    ).prefetch_related(
+        "services"
+    )
+
+    filterset_fields = ("region", "services")
+
 
 class GardenDetailView(generics.RetrieveAPIView):
-    queryset = Garden.objects.all()
+
     serializer_class = GardenDetailSerializer
+
+    queryset = Garden.objects.select_related(
+        "region"
+    ).prefetch_related(
+        "services",
+        "works"
+    )
