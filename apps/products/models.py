@@ -62,7 +62,7 @@ class Product(models.Model):
         related_name="products"
     )
 
-    stock = models.PositiveIntegerField(default=0)
+    stock = models.PositiveIntegerField(default=1)
 
     height = models.CharField(
         max_length=2,
