@@ -9,6 +9,20 @@ class OrderItemCreateSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['product', 'quantity']
 
+    def validate(self, data):
+        product = data.get('product')
+        quantity = data.get('quantity')
+
+        if not product.is_active:
+            raise serializers.ValidationError('This product is not available for ordering.')
+
+        # Refresh from DB to ensure we validate against current stock
+        product.refresh_from_db()
+        if product.stock < quantity:
+            raise serializers.ValidationError(f'Insufficient stock. Only {product.stock} items available.')
+
+        return data
+
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     class Meta:
@@ -59,9 +73,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
         total = 0
         for item in items_data:
-            price = item['product'].price
+            product = item['product']
+            quantity = item['quantity']
+            price = product.price
+
             OrderItem.objects.create(order=order, price=price, **item)
-            total += price * item['quantity']
+            total += price * quantity
 
         order.total_price = total
         order.save()

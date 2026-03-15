@@ -1,12 +1,40 @@
+from django import forms
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from .models import Order, OrderItem, OrderItemReview
+
+
+class OrderItemInlineForm(forms.ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get('quantity')
+        product = self.cleaned_data.get('product')
+
+        if not product or quantity is None:
+            return quantity
+
+        old_quantity = 0
+        if self.instance and self.instance.pk:
+            old_quantity = OrderItem.objects.filter(pk=self.instance.pk).values_list('quantity', flat=True).first() or 0
+
+        delta = quantity - old_quantity
+        if delta > 0 and product.stock < delta:
+            raise ValidationError(
+                f'Insufficient stock for "{product.name}". Only {product.stock} items available.'
+            )
+
+        return quantity
 
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
     readonly_fields = ("price",)
+    form = OrderItemInlineForm
 
 
 @admin.register(Order)
@@ -30,6 +58,7 @@ class OrderAdmin(admin.ModelAdmin):
         for instance in instances:
             if hasattr(instance, "product") and not instance.price:
                 instance.price = instance.product.price
+
             instance.save()
 
         formset.save_m2m()

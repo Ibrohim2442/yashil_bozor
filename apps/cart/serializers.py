@@ -23,6 +23,9 @@ class CartItemSerializer(serializers.ModelSerializer):
         if not product:
             raise serializers.ValidationError("Product not found.")
 
+        if not product.is_active:
+            raise serializers.ValidationError("Product is not available.")
+
         if not product.is_in_stock:
             raise serializers.ValidationError("Product is out of stock.")
 
